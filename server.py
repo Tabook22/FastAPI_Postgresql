@@ -1,13 +1,20 @@
 from contxt import db_settings as dbst 
 from dotenv import load_dotenv   #for python-dotenv method
 import os 
+import uuid
 import boto3
 import uvicorn
 from pydantic import BaseModel
 from datetime import datetime, timezone
 from typing import List
 import psycopg2
-from fastapi import FastAPI , UploadFile
+from fastapi import FastAPI, Request, Form, Depends ,File,UploadFile
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse
+from fastapi.responses import FileResponse #this allow us to use a link or url to see the files
+from fastapi.staticfiles import StaticFiles 
+from fastapi.templating import Jinja2Templates #we use Jinja2 as a template engine to serve HTML responses from your FastAPI application.
+from schemas import UserForm
 
 #for python-dotenv method, the .env is the root folder if it is in different folder use "load_dotenv(path/to/.evn"
 load_dotenv()  
@@ -19,7 +26,16 @@ access_secret='4sws2OYFxte5fJoM8AzMAqGSt+Uv40o+e4Vj0cXn'
 region="us-west-1"
 '''
 
+#This is the schema for class user
+'''
+class User(BaseModel):
+    name:str 
+    email:str 
+    password:str
+'''
 
+
+#This is the schema for class usrevents_img
 class usrevents_img (BaseModel):
     imgid:int 
     img_title:str 
@@ -34,9 +50,67 @@ class usrevents_img (BaseModel):
 
 app=FastAPI(debug=True)
 
+#configure cors, so we don't have to be worry about the requests which comes from the backend
+app.add_middleware (
+    CORSMiddleware, 
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"]
+                   )
+
+templates=Jinja2Templates(directory='templates')
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
 @app.get('/status')
 async def check_status():
     return "In The name of Allah"
+
+@app.get('/items', response_class=HTMLResponse)
+def read_item(request:Request):
+    return templates.TemplateResponse("index.html",{"request":request})
+
+'''
+@app.post('/items')#,response_class=HTMLResponse)
+async def post_details(request:Request, 
+                       firstname:str=Form(...), 
+                       lastname:str=Form(...),
+                       details:str=Form(...),
+                       cvfile:UploadFile = File(...)):
+    #the async method means that there are some response still in the background (will be displyed in the future), and we should wait for it in the client side
+    #async def post_details(request:Request, form_data:UserForm=Depends(UserForm.as_form)):
+    #request_object_content = await cvfile.read()
+    #file_location = f"files/{cvfile.filename}"
+    try:
+        cvfile.filename=f"{uuid.uuid4}.jpg"
+        contents = await cvfile.read() # <-- Important!
+        # example of how you can save the file
+        with open(cvfile.filename, "wb") as f:
+            f.write(contents)
+        #with open('test1.png', "wb") as image:
+        #    image.write(cvfile)
+        #    image.close()
+            
+        print(f'First Name: {firstname}')
+        #print(cvfile.filename)
+        #print(f'Last Name: {lastname}')
+        #print(f'Details: {details}')
+        #return templates.TemplateResponse("index.html",{"request":request,"firstname":firstname, "lastname":lastname})
+        #print(form_data)
+    except Exception as e:
+        print(e)
+    return templates.TemplateResponse("index.html",{"request":request,"filename": cvfile.filename})
+
+'''
+# By default, FastAPI will return the responses using JSONResponse.
+# here we used HTMLResponse to specify that the response class is HTML
+# It is important to know that to return a response with HTML directly from FastAPI, use HTMLResponse
+@app.post('/items', response_class=HTMLResponse) 
+def post_form(request: Request, form_data: UserForm = Depends(UserForm.as_form)):
+    print(f"-----------------{form_data}")
+    return templates.TemplateResponse("index.html", {"request": request})
+
+
 
 @app.get("/photos", response_model=List[usrevents_img])
 async def get_all_photos():
@@ -118,4 +192,5 @@ async def add_photos(file: UploadFile):
 if __name__ == "__main__":
     # host="0.0.0.0" tells a server to "listen" for and accept connections from any IP address. On PCs and client devices. A 0.0. 0.0 address indicates the client isn't connected to a TCP/IP network,
     uvicorn.run(app, host="0.0.0.0", reload=False)
-    
+    #uvicorn.run(app, host='127.0.0.1', port=8005) #here we can choose the port we want for example 8000 or 8010
+    print("running")

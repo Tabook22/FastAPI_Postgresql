@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="{{ url_for('static', path='/styles.css')}}" rel="FastAPI">
+</head>
+<body>
+    <h1>Welcome to my website</h1>
+    <img src="{{ url_for('static', path='/nasser.jpeg')}}" alt="FastAPI">
+    {% if firstname %}
+    <p>the name is {{ firstname }}<span>--</span> {{ lastname }}</p>
+    {% else %}
+    <h1>No Name</h1>
+    {% endif %}
+    <hr>
+    {{filename}}
+    <form method="POST" encrption="Multipart/form-data">
+        <label for ="firstname">First Name:</label>
+        <input type="text" name="firstname"><br>
+        <label for ="lastname">Last Name:</label>
+        <input type="text" name="lastname"><br>
+        <label for ="Details">User Details:</label>
+        <input type="text" name="details"><br>
+        <label for ="cvfile">C.V fiel:</label>
+        <input type="file" name="cvfile"><br>
+        <input type="submit" value="submit">
+    </form>
+</body>
+</html>
