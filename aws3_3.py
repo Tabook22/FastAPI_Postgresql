@@ -22,3 +22,12 @@ aws_secret_access_key = 4sws2OYFxte5fJoM8AzMAqGSt+Uv40o+e4Vj0cXn
 #the boto3 uses the configuraitons inside the creddentials file to connent to our AWS account
 #the configuraiton file created once we have installed and configured our AWS CLT
 #for more information go to : https://aws.amazon.com/cli/?nc1=h_ls and follow the steps
+
+
+#Here we are going to use resources
+#boto3.resource is a high-level services class wrap around boto3.client.
+#boto3.client are low level, you don't have an "entry-class object", thus you  must explicitly specify the exact resources it connects to for every action you perform.
+s3 = boto3.resource("s3")
+mybucket = s3.Bucket('mybucket')
+# now mybucket is "attached" the S3 bucket name "mybucket"
+print(mybucket)
