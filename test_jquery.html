@@ -15,10 +15,11 @@
     </script>
     <script>
         $(document).ready(function () {
-            $('.n1:eq(3)').css({"color": "blue", "border": "2px solid blue"}).trigger('click');
-            $('ul').find('.n1:eq(2)').css({"color": "red", "border": "2px solid red"}).trigger('click');
+            $('.n1:eq(3)').trigger('click');
+            $('.n1:eq(3)').css({"color": "blue", "border": "2px solid blue"});
+            $('ul').find('.n1:eq(2)').css({"color": "red", "border": "2px solid red"});
 
-            $('.n1:eq(2)').on('click', function () {
+            $('.n1:eq(3)').on('click', function () {
                 alert("In The Name of God most merci most merciful");
             });
         });
