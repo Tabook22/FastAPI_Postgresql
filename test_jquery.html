@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        .ancestors * {
+            display: block;
+            border: 2px solid lightgrey;
+            color: lightgrey;
+            padding: 5px;
+            margin: 15px;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js">
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('.n1:eq(3)').css({"color": "blue", "border": "2px solid blue"}).trigger('click');
+            $('ul').find('.n1:eq(2)').css({"color": "red", "border": "2px solid red"}).trigger('click');
+
+            $('.n1:eq(2)').on('click', function () {
+                alert("In The Name of God most merci most merciful");
+            });
+        });
+    </script>
+</head>
+
+<body class="ancestors">body (great-grandparent)
+    <div style="width:500px;">div (grandparent)
+        <ul>ul (direct parent)
+            <li>li (child)
+                <img class="n1" src="" atl="nasser">
+                <img class="n1" src="" atl="nasser">
+                <img class="n1" src="" atl="nasser">
+                <img class="n1" src="" atl="nasser">
+            </li>
+        </ul>
+    </div>
+</body>
+
+</html>
